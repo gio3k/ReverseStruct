@@ -20,7 +20,7 @@ public class TargetStructSyntaxProvider
 
 		var result = new TargetStructInfo
 		{
-			TargetFullName = namedTypeSymbol.ToString(), TargetShortName = namedTypeSymbol.Name, FieldNames = []
+			TargetFullName = namedTypeSymbol.ToString(), TargetShortName = namedTypeSymbol.Name, Fields = []
 		};
 
 		foreach ( var typeMember in namedTypeSymbol.GetMembers() )
@@ -32,16 +32,26 @@ public class TargetStructSyntaxProvider
 			if ( !fieldSymbol.Type.IsValueType )
 				continue;
 
-			// Make sure .ReverseEndianness supports this type
-			if ( !BinaryPrimitivesUtil.ReverseEndiannessSupportedTypes.Contains( fieldSymbol.Type.MetadataName ) )
-				continue;
-
 			// Make sure it doesn't have the "NotReversible" attribute
 			if ( fieldSymbol.GetAttributes()
 			    .Any( v => v.AttributeClass?.ToString() == NotReversibleAttributeDefinition.FullName ) )
 				continue;
 
-			result.FieldNames.Add( fieldSymbol.Name );
+			// This field either needs to be supported by .ReverseEndianness or needs to be another reversible struct
+			if ( BinaryPrimitivesUtil.ReverseEndiannessSupportedTypes.Contains( fieldSymbol.Type.MetadataName ) )
+			{
+				// Supported by ReverseEndianness
+				result.Fields.Add( (fieldSymbol.Name, ReversalMethod.BinaryPrimitives) );
+				continue;
+			}
+
+			if ( fieldSymbol.Type.GetAttributes()
+			    .Any( v => v.AttributeClass?.ToString() == ReversibleAttributeDefinition.FullName ) )
+			{
+				// Another reversible struct
+				result.Fields.Add( (fieldSymbol.Name, ReversalMethod.ExistingExtension) );
+				continue;
+			}
 		}
 
 		return result;

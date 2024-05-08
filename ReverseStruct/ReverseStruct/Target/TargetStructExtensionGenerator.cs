@@ -13,11 +13,22 @@ public static class TargetStructExtensionGenerator
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	private static string GenerateReverseExtRefMethodBody( TargetStructInfo targetStructInfo )
 	{
-		var result = $"public static void Reverse(this ref {targetStructInfo.TargetFullName} x) {{";
-		foreach ( var name in targetStructInfo.FieldNames )
-			result += $"\n\t\t\tx.{name} = BinaryPrimitives.ReverseEndianness(x.{name});";
-
-		result += "\n\t\t}";
+		var result = $"\t// {targetStructInfo.Fields.Count} field(s)";
+		foreach ( var (name, reversalMethod) in targetStructInfo.Fields )
+		{
+			result += reversalMethod switch
+			{
+				ReversalMethod.BinaryPrimitives => $"""
+				                                    
+				                                    			x.{name} = BinaryPrimitives.ReverseEndianness(x.{name});
+				                                    """,
+				ReversalMethod.ExistingExtension => $"""
+				                                    
+				                                    			x.{name}.Reverse();
+				                                    """,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+		}
 		return result;
 	}
 
@@ -30,7 +41,9 @@ using System.Buffers.Binary;
 {NamespaceCrumbs.PublicNamespaceStatementStarter} {{
     public static partial class {ExtensionClassName} {{
 		/* Generated extension code for {targetStructInfo.TargetShortName} */
+		public static void Reverse(this ref {targetStructInfo.TargetFullName} x) {{
 		{GenerateReverseExtRefMethodBody( targetStructInfo )}
+		}}
 	}}
 }}
 ";

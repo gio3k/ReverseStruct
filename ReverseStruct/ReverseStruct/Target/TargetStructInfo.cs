@@ -6,5 +6,5 @@ public record struct TargetStructInfo
 {
 	public string TargetFullName;
 	public string TargetShortName;
-	public List<string> FieldNames;
+	public List<(string name, ReversalMethod reversalMethod)> Fields;
 }
