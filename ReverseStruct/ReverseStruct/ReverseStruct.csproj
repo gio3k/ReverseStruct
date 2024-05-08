@@ -12,13 +12,13 @@
 		<RootNamespace>ReverseStruct</RootNamespace>
 
 		<PackageId>giodotblue.ReverseStruct</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Gio</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/gio3k/ReverseStruct</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/gio3k/ReverseStruct</RepositoryUrl>
 		<PackageTags>source-generator</PackageTags>
-		<Description>Simple C# source generator to add byte order reversal to structs</Description>
+		<Description>Simple C# source generator that adds byte order reversal to structs</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
