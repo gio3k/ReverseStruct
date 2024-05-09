@@ -48,6 +48,7 @@ public static class TargetStructPartialGenerator
 		$@"{FileCrumbs.Header}
 using System;
 using System.Buffers.Binary;
+using {LibraryConstants.GeneratedNamespace};
 namespace {targetStructInfo.ContainingNamespace} {{
     public partial struct {targetStructInfo.ShortName} {{
 		/* Generated extension code for {targetStructInfo.ShortName} */
