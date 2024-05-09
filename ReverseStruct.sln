@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseStruct", "ReverseStruct\ReverseStruct\ReverseStruct.csproj", "{2EFBA371-E918-47B9-B426-1CA0586AF9B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseStruct", "ReverseStruct\ReverseStruct.csproj", "{2EFBA371-E918-47B9-B426-1CA0586AF9B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
