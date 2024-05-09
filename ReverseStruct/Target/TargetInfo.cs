@@ -14,7 +14,7 @@ public record struct TargetInfo
 {
 	public string FullName;
 	public string ShortName;
-	public string ContainingNamespace;
+	public string? ContainingNamespace;
 	public TargetDeclarationType DeclarationType;
 	public List<TargetFieldInfo> Fields;
 
@@ -49,10 +49,7 @@ public record struct TargetInfo
 		if ( reversalMethod == ReversalMethod.Invalid )
 			return null;
 
-		return new TargetFieldInfo( fieldSymbol.Name, reversalMethod )
-		{
-			IsArrayType = true
-		};
+		return new TargetFieldInfo( fieldSymbol.Name, reversalMethod ) { IsArrayType = true };
 	}
 
 	private static TargetFieldInfo? TryCreateFieldInfo( TargetInfo targetInfo, IFieldSymbol fieldSymbol )
@@ -87,7 +84,10 @@ public record struct TargetInfo
 		{
 			FullName = namedTypeSymbol.ToString(),
 			ShortName = namedTypeSymbol.Name,
-			ContainingNamespace = namedTypeSymbol.ContainingNamespace.ToString(),
+			ContainingNamespace =
+				namedTypeSymbol.ContainingNamespace.IsGlobalNamespace
+					? null
+					: namedTypeSymbol.ContainingNamespace.ToString(),
 			Fields = [],
 			DeclarationType = syntaxNode switch
 			{

@@ -27,20 +27,26 @@ public static class TargetPartialGenerator
 	/// <param name="targetInfo">TargetInfo</param>
 	/// <returns>Source</returns>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	private static string GenerateSource( TargetInfo targetInfo ) =>
-		$@"{FileCrumbs.Header}
+	private static string GenerateSource( TargetInfo targetInfo )
+	{
+		// We need to skip the namespace declaration if the target is in the global namespace
+		var namespacePrefix = targetInfo.ContainingNamespace == null ? "// " : "";
+		var namespaceFullName = targetInfo.ContainingNamespace ?? "<global>";
+
+		return $@"{FileCrumbs.Header}
 using System;
 using System.Buffers.Binary;
 using {LibraryConstants.GeneratedNamespace};
-namespace {targetInfo.ContainingNamespace} {{
+{namespacePrefix}namespace {namespaceFullName} {{
     public partial {GetDeclarationTypeName( targetInfo.DeclarationType )} {targetInfo.ShortName} {{
 		/* Generated extension code for {targetInfo.ShortName} */
 		public void ReverseEndianness() {{
 			{ReverseMethodBodyGenerator.GenerateMethodBody( targetInfo, "this" )}
 		}}
 	}}
-}}
+{namespacePrefix}}}
 ";
+	}
 
 	/// <summary>
 	/// Add another part of the extension class for reversal of the target struct
