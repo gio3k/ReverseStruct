@@ -14,10 +14,10 @@ public class ReversibleAttributeDefinition
 using System;
 {NamespaceCrumbs.PublicNamespaceStatementStarter} {{
 	/// <summary>
-	/// Enables endian reversal with .ReverseEndianness() for this struct
+	/// Enables endian reversal with .ReverseEndianness()
 	/// </summary>
     {LanguageCrumbs.GeneratedCodeAttribute}
-    [System.AttributeUsage(AttributeTargets.Struct)]
+    [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class)]
     public class {Name} : System.Attribute {{
 	}}
 }}";

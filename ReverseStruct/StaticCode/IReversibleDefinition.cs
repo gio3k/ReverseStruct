@@ -18,7 +18,7 @@ public class IReversibleDefinition
 using System;
 {NamespaceCrumbs.PublicNamespaceStatementStarter} {{
 	/// <summary>
-	/// Byte-order reversal capability
+	/// Byte-order reversal capable
 	/// </summary>
     {LanguageCrumbs.GeneratedCodeAttribute}
     public interface {Name} {{

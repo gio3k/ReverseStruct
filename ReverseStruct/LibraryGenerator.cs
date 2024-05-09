@@ -25,7 +25,7 @@ public class LibraryGenerator : IIncrementalGenerator
 				SourceText.From( IReversibleDefinition.Source, Encoding.UTF8 ) );
 		} );
 
-		TargetStructPartialGenerator.Register( ctx );
-		TargetStructExtensionGenerator.Register( ctx );
+		TargetPartialGenerator.Register( ctx );
+		TargetExtensionGenerator.Register( ctx );
 	}
 }

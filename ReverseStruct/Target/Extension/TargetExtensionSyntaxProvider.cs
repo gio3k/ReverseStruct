@@ -7,21 +7,21 @@ using ReverseStruct.StaticCode;
 
 namespace ReverseStruct.Target.Extension;
 
-public class TargetStructExtensionSyntaxProvider
+public class TargetExtensionSyntaxProvider
 {
 	private static bool IsSyntaxTarget( SyntaxNode node, CancellationToken cancellationToken ) =>
-		node is StructDeclarationSyntax;
+		node is StructDeclarationSyntax or ClassDeclarationSyntax or RecordDeclarationSyntax;
 
-	private static TargetStructInfo? GetSemanticTarget( GeneratorAttributeSyntaxContext ctx,
+	private static TargetInfo? GetSemanticTarget( GeneratorAttributeSyntaxContext ctx,
 		CancellationToken cancellationToken )
 	{
 		if ( ctx.SemanticModel.GetDeclaredSymbol( ctx.TargetNode ) is not INamedTypeSymbol namedTypeSymbol )
 			return null;
-
-		return TargetStructInfo.CreateFromSymbol( namedTypeSymbol );
+		
+		return TargetInfo.Create( namedTypeSymbol, ctx.TargetNode );
 	}
 
-	public static IncrementalValuesProvider<TargetStructInfo?> Create(
+	public static IncrementalValuesProvider<TargetInfo?> Create(
 		IncrementalGeneratorInitializationContext context )
 	{
 		return context.SyntaxProvider.ForAttributeWithMetadataName( ReversibleAttributeDefinition.FullName,
