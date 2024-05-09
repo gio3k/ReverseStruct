@@ -8,12 +8,29 @@ https://www.nuget.org/packages/giodotblue.ReverseStruct/
 ```csharp
 using ReverseStruct;
 
+namespace MyNamespace;
+
+// create an extension class with the [Reversible] attribute...
 [Reversible]
-struct TestStruct {
-	int Foo;
+public struct StructA
+{
+	public int Value;
 }
 
-// then somewhere else...
-var test = new TestStruct();
-test.Reverse();
+// or use IReversible to generate ReverseEndianness() as part of your struct... 
+public partial struct StructB : IReversible
+{
+	// nested structs work fine!
+	public StructA Foo;
+	public uint Bar;
+}
+
+public static class Program
+{
+	public static void Main( string[] args )
+	{
+		var test = new StructB();
+		test.ReverseEndianness();
+	}
+}
 ```
