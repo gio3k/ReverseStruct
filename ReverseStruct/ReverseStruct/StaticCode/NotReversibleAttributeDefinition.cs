@@ -1,3 +1,5 @@
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using ReverseStruct.StaticCode.Crumbs;
 
 namespace ReverseStruct.StaticCode;
@@ -21,4 +23,13 @@ using System;
     public class {Name} : System.Attribute {{
 	}}
 }}";
+}
+
+public static class NotReversibleExtensions
+{
+	public static bool HasNotReversibleAttribute( this ISymbol fieldSymbol )
+	{
+		return fieldSymbol.GetAttributes()
+			.Any( v => v.AttributeClass?.ToString() == NotReversibleAttributeDefinition.FullName );
+	}
 }

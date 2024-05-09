@@ -3,6 +3,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using ReverseStruct.StaticCode;
 using ReverseStruct.Target;
+using ReverseStruct.Target.Extension;
+using ReverseStruct.Target.Partial;
 
 namespace ReverseStruct;
 
@@ -18,9 +20,12 @@ public class LibraryGenerator : IIncrementalGenerator
 
 			postInitCtx.AddSource( $"{NotReversibleAttributeDefinition.Name}.g.cs",
 				SourceText.From( NotReversibleAttributeDefinition.Source, Encoding.UTF8 ) );
+
+			postInitCtx.AddSource( $"{IReversibleDefinition.Name}.g.cs",
+				SourceText.From( IReversibleDefinition.Source, Encoding.UTF8 ) );
 		} );
 
-		ctx.RegisterSourceOutput( TargetStructSyntaxProvider.Create( ctx ),
-			TargetStructExtensionGenerator.GenerateExtensionPartialForTargetStruct );
+		TargetStructPartialGenerator.Register( ctx );
+		TargetStructExtensionGenerator.Register( ctx );
 	}
 }

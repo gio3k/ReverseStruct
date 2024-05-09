@@ -3,20 +3,20 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using ReverseStruct.StaticCode.Crumbs;
 
-namespace ReverseStruct.Target;
+namespace ReverseStruct.Target.Partial;
 
-public static class TargetStructExtensionGenerator
+public static class TargetStructPartialGenerator
 {
-	public const string ExtensionClassName = "StructExtensions";
+	public const string FileSuffixName = "RevPartial";
 
 	/// <summary>
-	/// Generate source for the "Reverse(this ref *struct*)" method body
+	/// Generate source for the "ReverseEndianness()" method body
 	/// </summary>
 	/// <param name="targetStructInfo">TargetStructInfo</param>
 	/// <returns>Source</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Field has invalid reversal method</exception>
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
-	private static string GenerateReverseExtRefMethodBody( TargetStructInfo targetStructInfo )
+	private static string GenerateMethodBody( TargetStructInfo targetStructInfo )
 	{
 		var result = $"// {targetStructInfo.Fields.Count} field(s)";
 		foreach ( var (name, reversalMethod) in targetStructInfo.Fields )
@@ -25,11 +25,11 @@ public static class TargetStructExtensionGenerator
 			{
 				ReversalMethod.BinaryPrimitives => $"""
 				                                    
-				                                    			x.{name} = BinaryPrimitives.ReverseEndianness(x.{name});
+				                                    			this.{name} = BinaryPrimitives.ReverseEndianness(this.{name});
 				                                    """,
 				ReversalMethod.ExistingExtension => $"""
 				                                     
-				                                     			x.{name}.Reverse();
+				                                     			this.{name}.Reverse();
 				                                     """,
 				_ => throw new ArgumentOutOfRangeException()
 			};
@@ -48,11 +48,11 @@ public static class TargetStructExtensionGenerator
 		$@"{FileCrumbs.Header}
 using System;
 using System.Buffers.Binary;
-{NamespaceCrumbs.PublicNamespaceStatementStarter} {{
-    public static partial class {ExtensionClassName} {{
-		/* Generated extension code for {targetStructInfo.TargetShortName} */
-		public static void Reverse(this ref {targetStructInfo.TargetFullName} x) {{
-			{GenerateReverseExtRefMethodBody( targetStructInfo )}
+namespace {targetStructInfo.ContainingNamespace} {{
+    public partial struct {targetStructInfo.ShortName} {{
+		/* Generated extension code for {targetStructInfo.ShortName} */
+		public void ReverseEndianness() {{
+			{GenerateMethodBody( targetStructInfo )}
 		}}
 	}}
 }}
@@ -63,12 +63,18 @@ using System.Buffers.Binary;
 	/// </summary>
 	/// <param name="ctx">SourceProductionContext</param>
 	/// <param name="v">TargetStructInfo</param>
-	public static void GenerateExtensionPartialForTargetStruct( SourceProductionContext ctx, TargetStructInfo? v )
+	public static void GeneratePartialForTargetStruct( SourceProductionContext ctx, TargetStructInfo? v )
 	{
 		if ( v is not { } targetStructInfo )
 			return;
 
-		ctx.AddSource( $"{ExtensionClassName}.{targetStructInfo.TargetFullName}.g.cs",
+		ctx.AddSource( $"{FileSuffixName}.{targetStructInfo.FullName}.g.cs",
 			GenerateSource( targetStructInfo ) );
+	}
+
+	public static void Register( IncrementalGeneratorInitializationContext ctx )
+	{
+		ctx.RegisterSourceOutput( TargetStructPartialSyntaxProvider.Create( ctx ),
+			GeneratePartialForTargetStruct );
 	}
 }
