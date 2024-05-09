@@ -57,7 +57,7 @@ using {LibraryConstants.GeneratedNamespace};
 	{
 		if ( v is not { } targetInfo )
 			return;
-		
+
 		ctx.AddSource( $"{FilePrefix}.{targetInfo.FullName}.g.cs",
 			GenerateSource( targetInfo ) );
 	}

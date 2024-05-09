@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ReverseStruct.Diagnostics;
 using ReverseStruct.StaticCode;
 
 namespace ReverseStruct.Target;
@@ -17,6 +19,12 @@ public record struct TargetInfo
 	public string? ContainingNamespace;
 	public TargetDeclarationType DeclarationType;
 	public List<TargetFieldInfo> Fields;
+	public List<Diagnostic> Diagnostics;
+
+	private void ReportDiagnostic( Diagnostic diagnostic )
+	{
+		Diagnostics.Add( diagnostic );
+	}
 
 	private static ReversalMethod GetReversalMethodForType( ITypeSymbol typeSymbol, bool checkBinaryPrimitives )
 	{
@@ -57,7 +65,7 @@ public record struct TargetInfo
 		// Check for NotReversible attribute
 		if ( fieldSymbol.HasNotReversibleAttribute() )
 			return null;
-		
+
 		ReversalMethod reversalMethod;
 		if ( fieldSymbol.Type.IsReferenceType )
 		{
@@ -67,18 +75,26 @@ public record struct TargetInfo
 
 			// Reference type - maybe it's a class?
 			reversalMethod = GetReversalMethodForType( fieldSymbol.Type, checkBinaryPrimitives: false );
-			if ( reversalMethod != ReversalMethod.Invalid )
-				return new TargetFieldInfo( fieldSymbol.Name, reversalMethod );
+			if ( reversalMethod == ReversalMethod.Invalid )
+			{
+				targetInfo.ReportDiagnostic( Diagnostic.Create( LibraryDiagnosticDescriptors.WarningUnsupportedField,
+					fieldSymbol.Locations.First(), fieldSymbol.Type.Name ) );
+				return null;
+			}
+
+			return new TargetFieldInfo( fieldSymbol.Name, reversalMethod );
 		}
 
 		reversalMethod = GetReversalMethodForType( fieldSymbol.Type, checkBinaryPrimitives: true );
 		if ( reversalMethod != ReversalMethod.Invalid )
 			return new TargetFieldInfo( fieldSymbol.Name, reversalMethod );
 
+		targetInfo.ReportDiagnostic( Diagnostic.Create( LibraryDiagnosticDescriptors.WarningUnsupportedField,
+			fieldSymbol.Locations.First(), fieldSymbol.Type.Name ) );
 		return null;
 	}
 
-	public static TargetInfo Create( INamedTypeSymbol namedTypeSymbol, SyntaxNode syntaxNode )
+	public static TargetInfo Create( INamedTypeSymbol namedTypeSymbol, SyntaxNode? syntaxNode )
 	{
 		var targetInfo = new TargetInfo
 		{
@@ -89,6 +105,7 @@ public record struct TargetInfo
 					? null
 					: namedTypeSymbol.ContainingNamespace.ToString(),
 			Fields = [],
+			Diagnostics = [],
 			DeclarationType = syntaxNode switch
 			{
 				ClassDeclarationSyntax => TargetDeclarationType.Class,

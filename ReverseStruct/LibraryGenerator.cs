@@ -24,7 +24,7 @@ public class LibraryGenerator : IIncrementalGenerator
 			postInitCtx.AddSource( $"{IReversibleDefinition.Name}.g.cs",
 				SourceText.From( IReversibleDefinition.Source, Encoding.UTF8 ) );
 		} );
-
+		
 		TargetPartialGenerator.Register( ctx );
 		TargetExtensionGenerator.Register( ctx );
 	}

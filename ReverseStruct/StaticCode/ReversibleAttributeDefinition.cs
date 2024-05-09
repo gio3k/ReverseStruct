@@ -1,4 +1,6 @@
-﻿using ReverseStruct.StaticCode.Crumbs;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
+using ReverseStruct.StaticCode.Crumbs;
 
 namespace ReverseStruct.StaticCode;
 
@@ -21,4 +23,13 @@ using System;
     public class {Name} : System.Attribute {{
 	}}
 }}";
+}
+
+public static class ReversibleExtensions
+{
+	public static bool HasReversibleAttribute( this ISymbol fieldSymbol )
+	{
+		return fieldSymbol.GetAttributes()
+			.Any( v => v.AttributeClass?.ToString() == ReversibleAttributeDefinition.FullName );
+	}
 }

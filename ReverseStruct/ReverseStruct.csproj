@@ -1,18 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-		<Nullable>enable</Nullable>
-		<LangVersion>latest</LangVersion>
-
-		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-		<IsRoslynComponent>true</IsRoslynComponent>
-
-		<RootNamespace>ReverseStruct</RootNamespace>
-
 		<PackageId>giodotblue.ReverseStruct</PackageId>
-		<Version>1.0.7</Version>
+		<Version>1.0.8</Version>
 		<Authors>Gio</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/gio3k/ReverseStruct</PackageProjectUrl>
@@ -22,6 +12,16 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Title>ReverseStruct</Title>
+		
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IsPackable>true</IsPackable>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<IsRoslynComponent>true</IsRoslynComponent>
+
+		<RootNamespace>ReverseStruct</RootNamespace>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -34,6 +34,13 @@
 
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<None Include="../README.md" Pack="true" PackagePath="\"/>
+
+		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

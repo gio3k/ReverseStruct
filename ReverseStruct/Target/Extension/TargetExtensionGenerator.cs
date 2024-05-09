@@ -41,7 +41,7 @@ using System.Buffers.Binary;
 	{
 		if ( v is not { } targetInfo )
 			return;
-		
+
 		ctx.AddSource( $"{ExtensionClassName}.{targetInfo.FullName}.g.cs",
 			GenerateSource( targetInfo ) );
 	}
