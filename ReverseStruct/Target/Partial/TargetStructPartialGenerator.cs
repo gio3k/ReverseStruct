@@ -29,7 +29,7 @@ public static class TargetStructPartialGenerator
 				                                    """,
 				ReversalMethod.ExistingExtension => $"""
 				                                     
-				                                     			this.{name}.Reverse();
+				                                     			this.{name}.ReverseEndianness();
 				                                     """,
 				_ => throw new ArgumentOutOfRangeException()
 			};

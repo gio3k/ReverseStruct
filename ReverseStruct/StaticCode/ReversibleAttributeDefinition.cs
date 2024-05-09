@@ -14,7 +14,7 @@ public class ReversibleAttributeDefinition
 using System;
 {NamespaceCrumbs.PublicNamespaceStatementStarter} {{
 	/// <summary>
-	/// Enables endian reversal with .Reverse() for this struct
+	/// Enables endian reversal with .ReverseEndianness() for this struct
 	/// </summary>
     {LanguageCrumbs.GeneratedCodeAttribute}
     [System.AttributeUsage(AttributeTargets.Struct)]

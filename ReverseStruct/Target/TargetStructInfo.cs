@@ -51,11 +51,17 @@ public record struct TargetStructInfo
 			// Is it supported by us? (ReversibleAttribute, extension method)
 			if ( fieldSymbol.Type.GetAttributes()
 			    .Any( v => v.AttributeClass?.ToString() == ReversibleAttributeDefinition.FullName ) )
+			{
 				result.Fields.Add( (fieldSymbol.Name, ReversalMethod.ExistingExtension) );
+				continue;
+			}
 
 			// Is it supported by us? (IReversible, partial struct)
 			if ( fieldSymbol.Type.HasReversibleInterface() )
+			{
 				result.Fields.Add( (fieldSymbol.Name, ReversalMethod.ExistingExtension) );
+				continue;
+			}
 		}
 
 		return result;

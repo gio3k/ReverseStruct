@@ -18,7 +18,7 @@ public class IReversibleDefinition
 using System;
 {NamespaceCrumbs.PublicNamespaceStatementStarter} {{
 	/// <summary>
-	/// This field will not be affected by endian reversal
+	/// Byte-order reversal capability
 	/// </summary>
     {LanguageCrumbs.GeneratedCodeAttribute}
     public interface {Name} {{

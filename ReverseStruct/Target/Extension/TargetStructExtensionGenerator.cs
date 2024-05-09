@@ -75,7 +75,7 @@ using System.Buffers.Binary;
 
 	public static void Register( IncrementalGeneratorInitializationContext ctx )
 	{
-		ctx.RegisterSourceOutput( TargetStructPartialSyntaxProvider.Create( ctx ),
+		ctx.RegisterSourceOutput( TargetStructExtensionSyntaxProvider.Create( ctx ),
 			GenerateExtensionPartialForTargetStruct );
 	}
 }
