@@ -12,7 +12,7 @@
 		<RootNamespace>ReverseStruct</RootNamespace>
 
 		<PackageId>giodotblue.ReverseStruct</PackageId>
-		<Version>1.0.6</Version>
+		<Version>1.0.7</Version>
 		<Authors>Gio</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/gio3k/ReverseStruct</PackageProjectUrl>
@@ -32,6 +32,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
 
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<None Include="../README.md" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
