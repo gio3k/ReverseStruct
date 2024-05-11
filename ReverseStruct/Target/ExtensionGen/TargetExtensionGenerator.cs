@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using ReverseStruct.StaticCode.Crumbs;
 
-namespace ReverseStruct.Target.Extension;
+namespace ReverseStruct.Target.ExtensionGen;
 
 public static class TargetExtensionGenerator
 {
@@ -25,7 +25,7 @@ using System.Buffers.Binary;
     public static partial class {ExtensionClassName} {{
 		/* Generated extension code for {targetInfo.ShortName} */
 		public static void ReverseEndianness(this {paramTypePrefix}{targetInfo.FullName} x) {{
-			{ReverseMethodBodyGenerator.GenerateMethodBody( targetInfo, "x" )}
+			{ReverseMethodBodyGenerator.GenerateMethodBody( targetInfo, "x", 3 )}
 		}}
 	}}
 }}

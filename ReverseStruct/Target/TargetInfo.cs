@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ReverseStruct.Diagnostics;
 using ReverseStruct.StaticCode;
+using ReverseStruct.Target.TypeSupport;
 
 namespace ReverseStruct.Target;
 
@@ -21,44 +20,7 @@ public record struct TargetInfo
 	public List<TargetFieldInfo> Fields;
 	public List<Diagnostic> Diagnostics;
 
-	private void ReportDiagnostic( Diagnostic diagnostic )
-	{
-		Diagnostics.Add( diagnostic );
-	}
-
-	private static ReversalMethod GetReversalMethodForType( ITypeSymbol typeSymbol, bool checkBinaryPrimitives )
-	{
-		if ( checkBinaryPrimitives && typeSymbol.IsValueType )
-		{
-			// Is it supported by BinaryPrimitives.ReverseEndianness?
-			if ( BinaryPrimitivesUtil.IsTypeSupportedByReverseEndianness( typeSymbol.MetadataName ) )
-				// Supported by ReverseEndianness
-				return ReversalMethod.BinaryPrimitives;
-		}
-
-		// Is it supported by us? (ReversibleAttribute, extension method)
-		if ( typeSymbol.GetAttributes()
-		    .Any( v => v.AttributeClass?.ToString() == ReversibleAttributeDefinition.FullName ) )
-			return ReversalMethod.ExistingExtension;
-
-		// Is it supported by us? (IReversible, partial target)
-		if ( typeSymbol.HasReversibleInterface() )
-			return ReversalMethod.ExistingExtension;
-
-		return ReversalMethod.Invalid;
-	}
-
-	private static TargetFieldInfo? TryCreateFieldInfoForArray( TargetInfo targetInfo, IFieldSymbol fieldSymbol )
-	{
-		if ( fieldSymbol.Type is not IArrayTypeSymbol arrayTypeSymbol )
-			return null;
-
-		var reversalMethod = GetReversalMethodForType( arrayTypeSymbol.ElementType, checkBinaryPrimitives: true );
-		if ( reversalMethod == ReversalMethod.Invalid )
-			return null;
-
-		return new TargetFieldInfo( fieldSymbol.Name, reversalMethod ) { IsArrayType = true };
-	}
+	internal void ReportDiagnostic( Diagnostic diagnostic ) => Diagnostics.Add( diagnostic );
 
 	private static TargetFieldInfo? TryCreateFieldInfo( TargetInfo targetInfo, IFieldSymbol fieldSymbol )
 	{
@@ -66,32 +28,12 @@ public record struct TargetInfo
 		if ( fieldSymbol.HasNotReversibleAttribute() )
 			return null;
 
-		ReversalMethod reversalMethod;
-		if ( fieldSymbol.Type.IsReferenceType )
-		{
-			// Reference type - maybe it's an array?
-			if ( TryCreateFieldInfoForArray( targetInfo, fieldSymbol ) is { } arrayTargetFieldInfo )
-				return arrayTargetFieldInfo;
+		// Create field type info
+		if ( FieldTypeInfoCreator.TryCreateFieldTypeInfo( targetInfo, fieldSymbol.Type, fieldSymbol.Locations.First() )
+		    is not { } fieldTypeInfo )
+			return null;
 
-			// Reference type - maybe it's a class?
-			reversalMethod = GetReversalMethodForType( fieldSymbol.Type, checkBinaryPrimitives: false );
-			if ( reversalMethod == ReversalMethod.Invalid )
-			{
-				targetInfo.ReportDiagnostic( Diagnostic.Create( LibraryDiagnosticDescriptors.WarningUnsupportedField,
-					fieldSymbol.Locations.First(), fieldSymbol.Type.Name ) );
-				return null;
-			}
-
-			return new TargetFieldInfo( fieldSymbol.Name, reversalMethod );
-		}
-
-		reversalMethod = GetReversalMethodForType( fieldSymbol.Type, checkBinaryPrimitives: true );
-		if ( reversalMethod != ReversalMethod.Invalid )
-			return new TargetFieldInfo( fieldSymbol.Name, reversalMethod );
-
-		targetInfo.ReportDiagnostic( Diagnostic.Create( LibraryDiagnosticDescriptors.WarningUnsupportedField,
-			fieldSymbol.Locations.First(), fieldSymbol.Type.Name ) );
-		return null;
+		return new TargetFieldInfo( fieldSymbol.Name, fieldTypeInfo );
 	}
 
 	public static TargetInfo Create( INamedTypeSymbol namedTypeSymbol, SyntaxNode? syntaxNode )

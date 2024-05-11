@@ -1,8 +1,9 @@
+using ReverseStruct.Target.TypeSupport;
+
 namespace ReverseStruct.Target;
 
-public struct TargetFieldInfo( string fieldName, ReversalMethod reversalMethod )
+public struct TargetFieldInfo( string fieldName, IFieldTypeInfo fieldType )
 {
 	public readonly string FieldName = fieldName;
-	public readonly ReversalMethod ReversalMethod = reversalMethod;
-	public bool IsArrayType = false;
+	public readonly IFieldTypeInfo FieldType = fieldType;
 }

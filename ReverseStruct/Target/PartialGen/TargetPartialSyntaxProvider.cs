@@ -1,30 +1,31 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReverseStruct.StaticCode;
 
-namespace ReverseStruct.Target.Extension;
+namespace ReverseStruct.Target.PartialGen;
 
-public class TargetExtensionSyntaxProvider
+public class TargetPartialSyntaxProvider
 {
 	private static bool IsSyntaxTarget( SyntaxNode node, CancellationToken cancellationToken ) =>
 		node is StructDeclarationSyntax or ClassDeclarationSyntax or RecordDeclarationSyntax;
 
-	private static TargetInfo? GetSemanticTarget( GeneratorAttributeSyntaxContext ctx,
+	private static TargetInfo? GetSemanticTarget( GeneratorSyntaxContext ctx,
 		CancellationToken cancellationToken )
 	{
-		if ( ctx.SemanticModel.GetDeclaredSymbol( ctx.TargetNode ) is not INamedTypeSymbol namedTypeSymbol )
+		if ( ctx.SemanticModel.GetDeclaredSymbol( ctx.Node ) is not INamedTypeSymbol namedTypeSymbol )
 			return null;
-		
-		return TargetInfo.Create( namedTypeSymbol, ctx.TargetNode );
+
+		if ( !namedTypeSymbol.HasReversibleInterface() )
+			return null;
+
+		return TargetInfo.Create( namedTypeSymbol, ctx.Node );
 	}
 
 	public static IncrementalValuesProvider<TargetInfo?> Create(
 		IncrementalGeneratorInitializationContext context )
 	{
-		return context.SyntaxProvider.ForAttributeWithMetadataName( ReversibleAttributeDefinition.FullName,
+		return context.SyntaxProvider.CreateSyntaxProvider(
 			predicate: IsSyntaxTarget,
 			transform: GetSemanticTarget );
 	}

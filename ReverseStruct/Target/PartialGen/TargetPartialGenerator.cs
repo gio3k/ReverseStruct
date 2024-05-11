@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using ReverseStruct.StaticCode.Crumbs;
 
-namespace ReverseStruct.Target.Partial;
+namespace ReverseStruct.Target.PartialGen;
 
 public static class TargetPartialGenerator
 {
@@ -41,7 +41,7 @@ using {LibraryConstants.GeneratedNamespace};
     public partial {GetDeclarationTypeName( targetInfo.DeclarationType )} {targetInfo.ShortName} {{
 		/* Generated extension code for {targetInfo.ShortName} */
 		public void ReverseEndianness() {{
-			{ReverseMethodBodyGenerator.GenerateMethodBody( targetInfo, "this" )}
+			{ReverseMethodBodyGenerator.GenerateMethodBody( targetInfo, "this", 3 )}
 		}}
 	}}
 {namespacePrefix}}}
