@@ -29,7 +29,7 @@ public record struct TargetInfo
 			return null;
 
 		// Create field type info
-		if ( FieldTypeInfoCreator.TryCreateFieldTypeInfo( targetInfo, fieldSymbol.Type, fieldSymbol.Locations.First() )
+		if ( FieldTypeInfoCreator.TryCreateFieldTypeInfo( targetInfo, fieldSymbol.Type, fieldSymbol )
 		    is not { } fieldTypeInfo )
 			return null;
 

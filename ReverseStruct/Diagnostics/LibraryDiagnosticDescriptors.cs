@@ -5,12 +5,15 @@ namespace ReverseStruct.Diagnostics;
 
 public static class LibraryDiagnosticDescriptors
 {
-	public static readonly DiagnosticDescriptor WarningUnsupportedField = new("RVST0010",
+	public static readonly DiagnosticDescriptor WarningUnsupportedField = new(
+		"RVST0010",
 		"Irreversible field",
-		"Type {0} isn't reversible and isn't marked with the [NotReversible] attribute. It will be ignored.",
+		"Irreversible field '{0}'",
 		"ReverseStructFields",
 		DiagnosticSeverity.Warning,
-		true);
+		isEnabledByDefault: true,
+		description:
+		"Field type is unsupported and isn't marked with the [NotReversible] attribute. It will be ignored.");
 
 	public static ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =
 		ImmutableArray.Create( WarningUnsupportedField );

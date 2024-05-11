@@ -1,9 +1,7 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using ReverseStruct.StaticCode;
-using ReverseStruct.Target;
 using ReverseStruct.Target.ExtensionGen;
 using ReverseStruct.Target.PartialGen;
 
