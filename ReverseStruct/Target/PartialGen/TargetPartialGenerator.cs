@@ -9,17 +9,7 @@ public static class TargetPartialGenerator
 {
 	public const string FilePrefix = "RevPartial";
 
-	private static string GetDeclarationTypeName( TargetDeclarationType declarationType )
-	{
-		return declarationType switch
-		{
-			TargetDeclarationType.Class => "class",
-			TargetDeclarationType.Record => "record",
-			TargetDeclarationType.Struct => "struct",
-			TargetDeclarationType.Unknown => throw new InvalidOperationException( "Unknown TargetDeclarationType" ),
-			_ => throw new InvalidOperationException( "Invalid TargetDeclarationType" )
-		};
-	}
+	private static string GetDeclarationTypeName( TargetDeclarationType declarationType ) => declarationType.GetText();
 
 	/// <summary>
 	/// Generate additional source for the partial static extension class

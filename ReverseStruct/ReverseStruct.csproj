@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<PackageId>giodotblue.ReverseStruct</PackageId>
-		<Version>1.0.10</Version>
+		<Version>1.0.11</Version>
 		<Authors>Gio</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/gio3k/ReverseStruct</PackageProjectUrl>

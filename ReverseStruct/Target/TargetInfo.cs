@@ -48,13 +48,7 @@ public record struct TargetInfo
 					: namedTypeSymbol.ContainingNamespace.ToString(),
 			Fields = [],
 			Diagnostics = [],
-			DeclarationType = syntaxNode switch
-			{
-				ClassDeclarationSyntax => TargetDeclarationType.Class,
-				StructDeclarationSyntax => TargetDeclarationType.Struct,
-				RecordDeclarationSyntax => TargetDeclarationType.Record,
-				_ => TargetDeclarationType.Unknown
-			}
+			DeclarationType = syntaxNode.GetTargetDeclarationType()
 		};
 
 		foreach ( var typeMemberSymbol in namedTypeSymbol.GetMembers() )
